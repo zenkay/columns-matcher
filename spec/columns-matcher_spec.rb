@@ -74,6 +74,12 @@ describe ColumnsMatcher do
       @matcher.column_of("name").should be_nil
     end
 
+    it "should not find single column with a reg exp" do
+      @matcher.add_column("email", ["[Ee]?[\-]*mail[s]*"])
+      @matcher.set_header(["Emails"])
+      @matcher.column_of("email").should be(0)
+    end
+
   end
   
   

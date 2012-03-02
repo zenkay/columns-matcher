@@ -91,7 +91,7 @@ gem "columns-matcher"
 # the column that contains the name can be lebeled with "NAME", "NOME" or "NOMBRE"
 @matcher.add_column("name", ["NAME", "NOME", "NOMBRE"])
 
-# the column that contains the name can be lebeled with "NAME", "NOME" or "NOMBRE"
+# the column that contains the surname can be lebeled with "SURNAME", "COGNOME" or "APELLIDOS"
 @matcher.add_column("cognome", ["SURNAME", "COGNOME", "APELLIDOS"])
 
 # We suppose the header is ["COGNOME", "NOME", "INDIRIZZO"]
@@ -99,5 +99,34 @@ gem "columns-matcher"
 
 @matcher.column_of("name") # return 1
 @matcher.column_of("cognome") # return 0
+```
 
+First try is as exact match. If does not work it try with different case:
+
+```ruby
+
+@matcher = ColumnsMatcher::Matcher.new
+
+# the column that contains the name can be lebeled with "NAME", "NOME" or "NOMBRE"
+@matcher.add_column("name", ["name", "nome", "nombre"])
+
+# We suppose the header is ["APELLIDO", "NOMBRE", "ADDRESS"]
+@matcher.set_header(header_loaded_from_spreadsheet)
+
+@matcher.column_of("name") # return 1
+```
+
+If I can't find the column with exact match or different case match i can also use reg exp
+
+```ruby
+
+@matcher = ColumnsMatcher::Matcher.new
+
+# the column that contains the name can be lebeled with "NAME", "NOME" or "NOMBRE"
+@matcher.add_column("email", ["[Ee]?[\-]*mail[s]*"])
+
+# We suppose the header is ["Surname", "Name", "Emails"]
+@matcher.set_header(header_loaded_from_spreadsheet)
+
+@matcher.column_of("email") # return 2
 ```
