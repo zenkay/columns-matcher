@@ -6,7 +6,7 @@ module ColumnsMatcher
     def initialize
       @header = []
       @matcher = {}
-      @columns = nil
+      @columns = {}
     end
     
     def add_column(name, labels)
@@ -25,7 +25,7 @@ module ColumnsMatcher
     
     def add_columns(matches)      
       if matches.is_a? Hash
-        matches.each_with_index do |name, label|
+        matches.each do |name, labels|
           begin
             if labels.is_a? String
               @matcher[name] = [labels]
@@ -54,22 +54,39 @@ module ColumnsMatcher
     
     def match_columns
       if not @matcher.empty? and not @header.empty?
-        
-        # corrispondenza esatta
-        @matcher.each_with_index do |name, labels|
+
+        @matcher.each do |name, labels|
           labels.each do |label|
-            if @header.index_of(label) != -1
-              @columns[name] = @header.index_of(label)
+            
+            # exact match
+            unless @header.index(label).nil?
+              @columns[name] = @header.index(label)
+              break
             end
+            
+            # different case
+            @header.each_with_index do |head, index|
+              if head.downcase == label.downcase
+                @columns[name] = index
+                break
+              end
+            end
+            break unless @columns[name].nil?
+            
+            # reg-exp
+            @header.each_with_index do |head, index|
+              unless head.match(/^#{label}$/).nil?
+                @columns[name] = index
+                break
+              end
+            end
+            break unless @columns[name].nil?
+            
+            # multiple words search
+            # to-do
+            
           end
         end
-        
-        # espressione regolare
-        # to-do
-        
-        # similar text
-        # to-do
-      
       end
     end
     
