@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Columns-matcher by zenkay</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Columns-matcher</h1>
+<p>Given an hash of possibles header label find the correct position of a column in the real header. Useful when you don't know the structure of a spreadsheet.</p>
+        <p class="view"><a href="https://github.com/zenkay/columns-matcher">View the Project on GitHub <small>zenkay/columns-matcher</small></a></p>
+        <ul>
+          <li><a href="https://github.com/zenkay/columns-matcher/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/zenkay/columns-matcher/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/zenkay/columns-matcher">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>When you work with spreadsheets and casual users things do not always go as you want.</p>
+
+<p>I worked on a project where users have to upload a spreadsheet with a lot of data about clients purchases.
+After 3 upload they call me because the system "did not work well".</p>
+
+<p>The files look like these followiong.</p>
+
+<p>File 1:</p>
+
+<table>
+<tr>
+<th>Name</th>
+    <th>Surname</th>
+    <th>Emails</th>
+  </tr>
+<tr>
+<td>John</td>
+    <td>Smith</td>
+    <td>john.smith@gmail.com</td>
+  </tr>
+<tr>
+<td>John</td>
+    <td>Doe</td>
+    <td>john.doe@hotmail.com</td>
+  </tr>
+</table><p>File 2:</p>
+
+<table>
+<tr>
+<th>Surname</th>
+    <th>Name</th>
+    <th>E-mail</th>
+  </tr>
+<tr>
+<td>Smith</td>
+    <td>John</td>
+    <td>john.smith@gmail.com</td>
+  </tr>
+<tr>
+<td>Doe</td>
+    <td>John</td>
+    <td>john.doe@hotmail.com</td>
+  </tr>
+</table><p>File 3:</p>
+
+<table>
+<tr>
+<th>Mail</th>
+    <th>Nombre</th>
+    <th>Apellido</th>
+  </tr>
+<tr>
+<td>john.smith@gmail.com</td>
+    <td>John</td>
+    <td>Smith</td>
+  </tr>
+<tr>
+<td>john.doe@hotmail.com</td>
+    <td>John</td>
+    <td>Doe</td>
+  </tr>
+</table><p>3 files, 3 different structures. 3 different headers. WTF!
+How can i guess the position of the columns i'm looking for?</p>
+
+<p>This gem try to solve the problem</p>
+
+<h2>Install</h2>
+
+<p>Add to your Gemfile and run the <code>bundle</code> command to install it.</p>
+
+<div class="highlight">
+<pre><span class="n">gem</span> <span class="s2">"columns-matcher"</span>
+</pre>
+</div>
+
+
+<p><strong>N.B. Requires Ruby 1.9.2 or later.</strong></p>
+
+<h2>Use</h2>
+
+<div class="highlight">
+<pre>
+<span class="nb">require</span> <span class="s2">"columns-matcher"</span>
+
+<span class="vi">@matcher</span> <span class="o">=</span> <span class="no">ColumnsMatcher</span><span class="o">::</span><span class="no">Matcher</span><span class="o">.</span><span class="n">new</span>
+
+<span class="c1"># the column that contains the name can be lebeled with "NAME", "NOME" or "NOMBRE"</span>
+<span class="vi">@matcher</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="o">[</span><span class="s2">"NAME"</span><span class="p">,</span> <span class="s2">"NOME"</span><span class="p">,</span> <span class="s2">"NOMBRE"</span><span class="o">]</span><span class="p">)</span>
+
+<span class="c1"># the column that contains the surname can be lebeled with "SURNAME", "COGNOME" or "APELLIDOS"</span>
+<span class="vi">@matcher</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">"cognome"</span><span class="p">,</span> <span class="o">[</span><span class="s2">"SURNAME"</span><span class="p">,</span> <span class="s2">"COGNOME"</span><span class="p">,</span> <span class="s2">"APELLIDOS"</span><span class="o">]</span><span class="p">)</span>
+
+<span class="c1"># We suppose the header is ["COGNOME", "NOME", "INDIRIZZO"]</span>
+<span class="vi">@matcher</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="n">header_loaded_from_spreadsheet</span><span class="p">)</span>
+
+<span class="vi">@matcher</span><span class="o">.</span><span class="n">column_of</span><span class="p">(</span><span class="s2">"name"</span><span class="p">)</span> <span class="c1"># return 1</span>
+<span class="vi">@matcher</span><span class="o">.</span><span class="n">column_of</span><span class="p">(</span><span class="s2">"cognome"</span><span class="p">)</span> <span class="c1"># return 0</span>
+</pre>
+</div>
+
+
+<p>First try is as exact match. If does not work it try with different case:</p>
+
+<div class="highlight">
+<pre>
+<span class="nb">require</span> <span class="s2">"columns-matcher"</span>
+
+<span class="vi">@matcher</span> <span class="o">=</span> <span class="no">ColumnsMatcher</span><span class="o">::</span><span class="no">Matcher</span><span class="o">.</span><span class="n">new</span>
+
+<span class="c1"># the column that contains the name can be lebeled with "NAME", "NOME" or "NOMBRE"</span>
+<span class="vi">@matcher</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="o">[</span><span class="s2">"name"</span><span class="p">,</span> <span class="s2">"nome"</span><span class="p">,</span> <span class="s2">"nombre"</span><span class="o">]</span><span class="p">)</span>
+
+<span class="c1"># We suppose the header is ["APELLIDO", "NOMBRE", "ADDRESS"]</span>
+<span class="vi">@matcher</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="n">header_loaded_from_spreadsheet</span><span class="p">)</span>
+
+<span class="vi">@matcher</span><span class="o">.</span><span class="n">column_of</span><span class="p">(</span><span class="s2">"name"</span><span class="p">)</span> <span class="c1"># return 1</span>
+</pre>
+</div>
+
+
+<p>If I can't find the column with exact match or different case match i can also use reg exp</p>
+
+<div class="highlight">
+<pre>
+<span class="nb">require</span> <span class="s2">"columns-matcher"</span>
+
+<span class="vi">@matcher</span> <span class="o">=</span> <span class="no">ColumnsMatcher</span><span class="o">::</span><span class="no">Matcher</span><span class="o">.</span><span class="n">new</span>
+
+<span class="c1"># the column that contains the name can be lebeled with "NAME", "NOME" or "NOMBRE"</span>
+<span class="vi">@matcher</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">"email"</span><span class="p">,</span> <span class="o">[</span><span class="s2">"[Ee]?[\-]*mail[s]*"</span><span class="o">]</span><span class="p">)</span>
+
+<span class="c1"># We suppose the header is ["Surname", "Name", "Emails"]</span>
+<span class="vi">@matcher</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="n">header_loaded_from_spreadsheet</span><span class="p">)</span>
+
+<span class="vi">@matcher</span><span class="o">.</span><span class="n">column_of</span><span class="p">(</span><span class="s2">"email"</span><span class="p">)</span> <span class="c1"># return 2</span>
+</pre>
+</div>
+
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/zenkay">zenkay</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
