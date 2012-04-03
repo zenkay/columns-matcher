@@ -86,6 +86,8 @@ gem "columns-matcher"
 
 ```ruby
 
+require "columns-matcher"
+
 @matcher = ColumnsMatcher::Matcher.new
 
 # the column that contains the name can be lebeled with "NAME", "NOME" or "NOMBRE"
@@ -105,6 +107,8 @@ First try is as exact match. If does not work it try with different case:
 
 ```ruby
 
+require "columns-matcher"
+
 @matcher = ColumnsMatcher::Matcher.new
 
 # the column that contains the name can be lebeled with "NAME", "NOME" or "NOMBRE"
@@ -119,6 +123,8 @@ First try is as exact match. If does not work it try with different case:
 If I can't find the column with exact match or different case match i can also use reg exp
 
 ```ruby
+
+require "columns-matcher"
 
 @matcher = ColumnsMatcher::Matcher.new
 
