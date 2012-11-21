@@ -1,4 +1,4 @@
-# Column Matcher
+# Column Matcher [![Build Status](https://secure.travis-ci.org/zenkay/columns-matcher.png?branch=master)](http://travis-ci.org/zenkay/columns-matcher)
 
 When you work with spreadsheets and casual users things do not always go as you want.
 
