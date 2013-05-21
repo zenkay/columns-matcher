@@ -15,6 +15,6 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = ColumnsMatcher::VERSION
   
-  gem.add_development_dependency "rspec", "~> 2.6.0"
-  gem.add_development_dependency "rake", "~> 0.9.2.2"
+  gem.add_development_dependency "rspec", "~> 2.13.0"
+  gem.add_development_dependency "rake", "~> 10.0.4"
 end
